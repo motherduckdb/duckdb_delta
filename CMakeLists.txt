@@ -56,6 +56,18 @@ elseif("${OS_NAME}" STREQUAL "osx")
     endif()
 endif()
 
+# This is done because when duckdb_delta is used as a external submodule, git is not found
+set(Git_ROOT "/usr/bin")
+message("git_ROOT: ${GIT_ROOT}")
+
+# Check for git
+find_package(Git)
+if(Git_FOUND)
+    message("Git found: ${GIT_EXECUTABLE}")
+else ()
+    message("Git not found: ${GIT_EXECUTABLE}")
+endif()
+
 # Add rust_example as a CMake target
 ExternalProject_Add(
         ${KERNEL_NAME}
