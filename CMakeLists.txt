@@ -57,11 +57,11 @@ elseif("${OS_NAME}" STREQUAL "osx")
 endif()
 
 # This is done because when duckdb_delta is used as a external submodule, git is not found
-set(Git_ROOT "/usr/bin")
-message("git_ROOT: ${GIT_ROOT}")
+set(GIT_ROOT "/usr/bin")
+message("GIT_ROOT: ${GIT_ROOT}")
 
 # Check for git
-find_package(Git)
+find_package(GIT)
 if(Git_FOUND)
     message("Git found: ${GIT_EXECUTABLE}")
 else ()
