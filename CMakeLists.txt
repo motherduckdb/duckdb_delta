@@ -56,20 +56,14 @@ elseif("${OS_NAME}" STREQUAL "osx")
     endif()
 endif()
 
-# This is done because when duckdb_delta is used as a external submodule, git is not found
-set(GIT_ROOT "/usr/bin")
-message("GIT_ROOT: ${GIT_ROOT}")
-
-execute_process(COMMAND "which" "git")
-
-# Check for git
-find_package(Git)
-if(Git_FOUND)
-    message("Git found: ${GIT_EXECUTABLE}")
-else ()
-    message("Git not found: ${GIT_EXECUTABLE}")
+# if CMAKE_DISABLE_FIND_PACKAGE_Git is set to ON
+set(RESTORE_CMAKE_DISABLE_FIND_PACKAGE_Git OFF)
+if (CMAKE_DISABLE_FIND_PACKAGE_Git)
+set(RESTORE_CMAKE_DISABLE_FIND_PACKAGE_Git ON)
+set(CMAKE_DISABLE_FIND_PACKAGE_Git OFF)
 endif()
 
+message(STATUS "About to build delta-kernel for RUST_PLATFORM_TARGET=${RUST_PLATFORM_TARGET}")
 # Add rust_example as a CMake target
 ExternalProject_Add(
         ${KERNEL_NAME}
@@ -90,6 +84,10 @@ ExternalProject_Add(
         BUILD_BYPRODUCTS "${CMAKE_BINARY_DIR}/rust/src/delta_kernel/target/ffi-headers/delta_kernel_ffi.hpp"
         INSTALL_COMMAND ""
         LOG_BUILD ON)
+
+if (RESTORE_CMAKE_DISABLE_FIND_PACKAGE_Git)
+    set(CMAKE_DISABLE_FIND_PACKAGE_Git ON)
+endif()
 
 build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})
