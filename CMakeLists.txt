@@ -60,8 +60,10 @@ endif()
 set(GIT_ROOT "/usr/bin")
 message("GIT_ROOT: ${GIT_ROOT}")
 
+execute_process(COMMAND "which" "git")
+
 # Check for git
-find_package(GIT)
+find_package(Git)
 if(Git_FOUND)
     message("Git found: ${GIT_EXECUTABLE}")
 else ()
